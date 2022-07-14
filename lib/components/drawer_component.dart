@@ -19,7 +19,7 @@ Drawer sideMenu(
 
     backgroundColor: const Color(0xFFF87217),
     child: Container(
-      margin: EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
           DrawerHeader(
@@ -51,8 +51,6 @@ Drawer sideMenu(
                       builder: (BuildContext context) => EditPersonInformation(personObject)
                     )
                 );
-                //changeToEditPage();
-                //Navigator.pop(buildContext);
               }
           ),
           const SizedBox(height: 5,),
@@ -76,7 +74,7 @@ Drawer sideMenu(
                 isLoading(false);
             }
           ),
-          SizedBox(height: 80,),
+          const SizedBox(height: 80,),
           TextButton.icon(
               onPressed: (){
                 personObject.logOut(buildContext);

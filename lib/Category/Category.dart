@@ -1,9 +1,9 @@
 import 'package:corner_ar_gp/main_screens/home_screen/admin_homescreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../Data/Data.dart';
 import '../components/getdata_components.dart';
 import '../database/DatabaseHelper.dart';
-import '../main_screens/list_page/ListPage.dart';
 
 class Category{
   static const collectionName = "Category";
@@ -22,7 +22,7 @@ class Category{
   }
 
   String getName(){
-    return this.name;
+    return name;
   }
   String getId(){
     return id;
@@ -42,11 +42,12 @@ class Category{
     };
   }
 
-  Future<void> addCategory(BuildContext context,GlobalKey<FormState> formKey,Function isLoading) async {
+  Future<void> addCategory(BuildContext context,GlobalKey<FormState> formKey,Function isLoading,Data dataObject) async {
     isLoading(true);
-    data = await getData("Category");
-    if(formKey.currentState?.validate() ==false)
+    data = dataObject.categoryData;
+    if(formKey.currentState?.validate() ==false) {
       return;
+    }
     final categoryRef = getCategoryCollectionWithConverter("Category");
 
     String temp = categoryRef.doc().id;
@@ -59,19 +60,17 @@ class Category{
           )
       ).then((value) async{
         data = await getData("Category");
-        var adminData = await getData("Admin");
-        var furnitureData = await getDataFurniture("Furniture","Category");
+        dataObject.categoryData = data;
         Navigator.pop(context);
         Navigator.pushReplacement<void, void>(
             context,
             MaterialPageRoute<void>(
-              builder: (BuildContext context) =>AdminHomeScreen(adminData,data,furnitureData,1,"Categories List")
+              builder: (BuildContext context) =>AdminHomeScreen(1,"Categories List",dataObject)
             )
         );
-        print("aaaaaaaaaaaaaaaaddddddddddddddddddddddddddddddddddddddddddddd");
       });
     } catch (e) {
-      print("adddddd cateeegory eerrrror:   $e");
+      print("add category error:   $e");
     }
   }
 
@@ -81,16 +80,18 @@ class Category{
     }
     else{
       bool isExist = categoryExist(value);
-      if(isExist)
+      if(isExist) {
         return 'this Category name exist';
+      }
     }
     return null;
   }
 
   bool categoryExist(String value) {
       for(int i=0;i<data.length;i++){
-        if(value == data[i]['name'])
+        if(value == data[i]['name']) {
           return true;
+        }
       }
       return false;
   }

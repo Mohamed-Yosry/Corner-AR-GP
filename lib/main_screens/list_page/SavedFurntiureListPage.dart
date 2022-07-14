@@ -52,27 +52,15 @@ class _SavedFunitureListPageState extends State<SavedFurnitureListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        backgroundColor: Color(0xFFF87217),
+        backgroundColor: const Color(0xFFF87217),
       ),
       body: Stack(
         children: [
-          Container(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                'assets/backgroundBottom.png',
-                fit: BoxFit.fill,
-                width: double.infinity,
-              ),
-            ),
-          ),
-          Container(
-            child: Image.asset(
-              'assets/backgroundTop.png',
-              fit: BoxFit.fill,
-              //height: double.infinity,
-              width: double.infinity,
-            ),
+          Image.asset(
+            'assets/backgroundTop.png',
+            fit: BoxFit.fill,
+            height: double.infinity,
+            width: double.infinity,
           ),
           gridview_furnitureList(
               dataLength: dataLength,
@@ -86,17 +74,13 @@ class _SavedFunitureListPageState extends State<SavedFurnitureListPage> {
               onPressed: (index)async{
                 setIsLoading(true);
                 var newData;
-                print("$parentCollection     =========   $collectionName");
-                print("${data[index]}");
+
                 await FirebaseFirestore.instance.collection(parentCollection)
                     .doc(data[index]["parentID"]).collection(collectionName).doc(data[index]['id'])
                     .delete()
                     .then((_) async {
                   newData = await getUserDataFurniture(collectionName,parentCollection,data[index]["parentID"]);
-                  print("newData     $newData");
-                  setState((){});
-                  print("-------------------------------------------------------");
-                }).catchError((error) => print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Delete failed: $error'));
+                }).catchError((error) => print('Delete failed: $error'));
                 setState((){
                   data = newData;
                   dataLength = data.length;

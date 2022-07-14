@@ -11,7 +11,7 @@ Container EditUserNameForm({
 {
   _defaultValidator (value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter last name';
+      return 'Please enter valid name';
     }
     return null;
   }
@@ -23,25 +23,23 @@ Container EditUserNameForm({
       child: Column(
         children: [
           textFormFieldComponent(
-            hintText: 'First Name',
-            onChangedText: (value) => nameReturner(value),
-            validator: _defaultValidator,
-            isPasswordTextForm: false,
-            initialValue: firstNameSavedValue
+              hintText: 'First Name',
+              onChangedText: (value) => nameReturner(value),
+              validator: _defaultValidator,
+              isPasswordTextForm: false,
+              initialValue: firstNameSavedValue
           ),
           const SizedBox(height: 5,),
           textFormFieldComponent(
-            hintText: 'Last Name',
-            onChangedText: lastNameReturner,
-            validator: _defaultValidator,
-            isPasswordTextForm: false,
-            initialValue: lastNameSavedValue
+              hintText: 'Last Name',
+              onChangedText: lastNameReturner,
+              validator: _defaultValidator,
+              isPasswordTextForm: false,
+              initialValue: lastNameSavedValue
           ),
           const SizedBox(height: 5,),
         ],
       ),
     ),
   );
-
-
 }

@@ -28,64 +28,64 @@ ElevatedButton LogAndRegisterButton(
   );
 }
 
-ElevatedButton AdminHomeScreenButton(
-{
-  required String collectionName,
-  required BuildContext context,
-  required String buttonName,
-  required String pageName,
-  required Function isLoading
-}
-    ){
-  var Data;
-  var furnitureData;
-
-  return ElevatedButton(
-      onPressed: ()async{
-        isLoading(true);
-        //Data = await getData(collectionName);
-        print(Data);
-        print("innnnnnnished");
-        if(collectionName == "Furniture"){
-          Data = await getData("Category");
-          furnitureData = await getDataFurniture(collectionName,"Category");
-          Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) =>
-                    FurnitureListPage(
-                      spawned: false,
-                      title:pageName,
-                        collectionName:collectionName,
-                        Data: furnitureData[0],
-                        dataLength: furnitureData[0].length,
-                        parentData: Data,
-                      furnitureInCategory: furnitureData[1],
-                      isViewing: false,
-                        parentCollection: "Category",
-                      parentID: "",
-                    ),
-              )
-          );
-        }else{
-          Data = await getData(collectionName);
-          Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) =>
-                    ListPage(
-                        title:pageName,
-                        collectionName:collectionName,
-                        Data: Data,
-                        dataLength: Data.length
-                    ),
-              )
-          );
-        }
-        isLoading(false);
-      },
-      child: Text(buttonName));
-}
+// ElevatedButton AdminHomeScreenButton(
+// {
+//   required String collectionName,
+//   required BuildContext context,
+//   required String buttonName,
+//   required String pageName,
+//   required Function isLoading
+// }
+//     ){
+//   var Data;
+//   var furnitureData;
+//
+//   return ElevatedButton(
+//       onPressed: ()async{
+//         isLoading(true);
+//         //Data = await getData(collectionName);
+//         print(Data);
+//         print("innnnnnnished");
+//         if(collectionName == "Furniture"){
+//           Data = await getData("Category");
+//           furnitureData = await getDataFurniture(collectionName,"Category");
+//           Navigator.push(
+//               context,
+//               MaterialPageRoute<void>(
+//                 builder: (BuildContext context) =>
+//                     FurnitureListPage(
+//                       spawned: false,
+//                       title:pageName,
+//                         collectionName:collectionName,
+//                         Data: furnitureData[0],
+//                         dataLength: furnitureData[0].length,
+//                         parentData: Data,
+//                       furnitureInCategory: furnitureData[1],
+//                       isViewing: false,
+//                         parentCollection: "Category",
+//                       parentID: "",
+//                     ),
+//               )
+//           );
+//         }else{
+//           Data = await getData(collectionName);
+//           Navigator.push(
+//               context,
+//               MaterialPageRoute<void>(
+//                 builder: (BuildContext context) =>
+//                     ListPage(
+//                         title:pageName,
+//                         collectionName:collectionName,
+//                         Data: Data,
+//                         dataLength: Data.length
+//                     ),
+//               )
+//           );
+//         }
+//         isLoading(false);
+//       },
+//       child: Text(buttonName));
+// }
 
 
 

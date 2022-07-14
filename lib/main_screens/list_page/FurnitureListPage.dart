@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:corner_ar_gp/main_screens/add_furniture/add_furniture_screen.dart';
 import 'package:corner_ar_gp/person/Admin.dart';
 import 'package:flutter/material.dart';
+import '../../Data/Data.dart';
 import '../../Furniture/Furniture.dart';
-import '../../components/bottomBar_components.dart';
 import '../../components/dropDownList_components.dart';
 import '../../components/getdata_components.dart';
 import '../../components/gridview_component.dart';
@@ -13,9 +13,9 @@ import '../../database/DatabaseHelper.dart';
 class FurnitureListPage extends StatefulWidget {
   Function? spwan;
   BuildContext? context;
-  String title;
+  Data ?dataObject;
   String collectionName;
-  var Data;
+  var data;
   var parentData;
   var furnitureInCategory;
   int dataLength;
@@ -23,20 +23,19 @@ class FurnitureListPage extends StatefulWidget {
   String parentCollection;
   String parentID;
   bool spawned;
-  FurnitureListPage({required this.title,required this.collectionName,
-    required this.Data,required this.dataLength,
+  FurnitureListPage({this.dataObject,required this.collectionName,
+    required this.data,required this.dataLength,
     required this.parentData,required this.furnitureInCategory,required this.isViewing,
     required this.parentCollection,required this.parentID,required this.spawned,
   this.spwan,this.context});
   @override
   _FunitureListPageState createState() =>
-      _FunitureListPageState(this.title,this.collectionName,this.Data,this.dataLength,
-          this.parentData,this.furnitureInCategory,this.isViewing,parentCollection,parentID);
+      _FunitureListPageState(collectionName,data,dataLength,
+          parentData,furnitureInCategory,isViewing,parentCollection,parentID);
 
 }
 
 class _FunitureListPageState extends State<FurnitureListPage> {
-  String title;
   String collectionName;
   String buttonName="Add Admin";
   var data;
@@ -50,7 +49,7 @@ class _FunitureListPageState extends State<FurnitureListPage> {
   String parentID;
   bool isLoading = false;
 
-  _FunitureListPageState(this.title,this.collectionName,this.data,
+  _FunitureListPageState(this.collectionName,this.data,
       this.dataLength,this.parentData,this.furnitureInCategory,this.isViewing,this.parentCollection,this.parentID){
     originalData = this.data;
   }
@@ -114,28 +113,17 @@ class _FunitureListPageState extends State<FurnitureListPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                'assets/backgroundBottom.png',
-                fit: BoxFit.fill,
-                width: double.infinity,
-              ),
-            ),
-          ),
-          Container(
-            child: Image.asset(
-              'assets/backgroundTop.png',
-              fit: BoxFit.fill,
-              width: double.infinity,
-            ),
+          Image.asset(
+            'assets/backgroundTop.png',
+            fit: BoxFit.fill,
+            width: double.infinity,
+            height: double.infinity,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: categoryDropDownList(
                     dropdownValue: dropdownValue,
                     onPressedButton: (String? newValue) => changeDropListValue(newValue),
@@ -158,8 +146,6 @@ class _FunitureListPageState extends State<FurnitureListPage> {
                     ),
                     onPressed: isViewing?(index)async{
                       setIsLoading(true);
-                      print(parentID);
-                      print(data[index]['modelName']);
                       Furniture furniture = Furniture(
                           parentID: parentID,
                           id: data[index]['id'],
@@ -167,7 +153,7 @@ class _FunitureListPageState extends State<FurnitureListPage> {
                           modelName: data[index]['modelName'],
                           modelUrl: data[index]['modelUrl']
                       );
-                      await saveFurniture(furniture).then((value) => print("heeeeellllllllllllllllll"));
+                      await saveFurniture(furniture);
                       setIsLoading(false);
                     }:(index)async{
                       setIsLoading(true);
@@ -181,13 +167,14 @@ class _FunitureListPageState extends State<FurnitureListPage> {
                           .delete()
                           .then((_) async {
                         newData = await getDataFurniture(collectionName,parentCollection);
-                        print(newData);
-                        setState((){});
                       }).catchError((error) => print('Delete failed: $error'));
                       setState((){
                         data = newData[0];
                         furnitureInCategory = newData[1];
                         dataLength = data.length;
+                        if(!widget.spawned) {
+                          widget.dataObject!.furnitureData = newData;
+                        }
                       });
                       setIsLoading(false);
                     }
@@ -203,19 +190,17 @@ class _FunitureListPageState extends State<FurnitureListPage> {
       floatingActionButton: widget.spawned?Container():(categoryID== ''? null :
       FloatingActionButton(
         onPressed: (){
-          if(true || collectionName == Admin.CollectionName){
+          if(true){
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) =>AddFurnitureScreen(categoryID: categoryID),)
+                  builder: (BuildContext context) =>AddFurnitureScreen(categoryID: categoryID,dataObject: widget.dataObject!,),)
             );
           }
         }
-
-        ,child: Icon(Icons.add),
-        backgroundColor: Color(0xFFF87217),
+        ,child: const Icon(Icons.add),
+        backgroundColor: const Color(0xFFF87217),
       )),
-
     );
   }
 }

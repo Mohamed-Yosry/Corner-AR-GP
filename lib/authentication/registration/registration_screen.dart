@@ -2,7 +2,6 @@ import 'package:corner_ar_gp/person/Admin.dart';
 import 'package:corner_ar_gp/person/Person.dart';
 import 'package:corner_ar_gp/person/User.dart';
 import 'package:flutter/material.dart';
-
 import '../../components/buttons_components.dart';
 import '../../components/textField_components.dart';
 
@@ -36,24 +35,16 @@ class _registrationScreenState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: isAdmin?AppBar(
-        title: Text("Add Admin"),
-        backgroundColor: Color(0xFFF87217),
+        title: const Text("Add Admin"),
+        backgroundColor: const Color(0xFFF87217),
       ):null,
       body: Stack(
         children: [
-          Container(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-
-            ),
-          ),
-          Container(
-            child: Image.asset(
-              'assets/background2.png',
-              fit: BoxFit.fill,
-              height: double.infinity,
-              width: double.infinity,
-            ),
+          Image.asset(
+            'assets/background2.png',
+            fit: BoxFit.fill,
+            height: double.infinity,
+            width: double.infinity,
           ),
           Container(
               padding: const EdgeInsets.fromLTRB(30, 160, 30, 12),
@@ -104,10 +95,10 @@ class _registrationScreenState extends State<RegistrationScreen> {
                           obscureText: isPasswordHidden? true : false,
                           decoration: InputDecoration(
                             hintText: "Password",
-                            enabledBorder: UnderlineInputBorder(
+                            enabledBorder: const UnderlineInputBorder(
                               borderSide: BorderSide(color: Color(0xFFbdc6cf)),
                             ),
-                            focusedBorder: UnderlineInputBorder(
+                            focusedBorder: const UnderlineInputBorder(
                               borderSide: BorderSide(color: Color(0xFFbdc6cf)),
                             ),
                             suffixIcon: IconButton(
@@ -124,7 +115,6 @@ class _registrationScreenState extends State<RegistrationScreen> {
                             password = value;
                           },
                           validator: (value) => person.passwordValidator(value),
-                          //style: TextStyle(color: const Color(0xFFbdc6cf)),
                         ),
                         Container(
                           padding: const EdgeInsets.fromLTRB(70,80,70,0),
@@ -134,7 +124,6 @@ class _registrationScreenState extends State<RegistrationScreen> {
                                     person.registration(_formKey, password, isAdmin, context,(value)=>setIsLoading(value))
                             )
                         ),
-
                       ],
                     ),
                   )

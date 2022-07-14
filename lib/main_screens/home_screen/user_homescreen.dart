@@ -29,7 +29,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   Color currentColor = Colors.amber;
   bool isSelected=false;
 
-   late UnityWidgetController _unityWidgetController;
+  late UnityWidgetController _unityWidgetController;
   void changeColor(Color color)  => ChangeColors(colorToHex(color).toString());
 
 
@@ -47,9 +47,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     loggedUser = _myAppProvider.getLoggedUser();
     sideMenuContent = loggedUser.name;
 
-    print(paletteGenerator);
-
-
     return Scaffold(
       drawer: sideMenu(
           isAdmin: false,
@@ -59,8 +56,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         spwan: (value) =>spwan(value)
       ),
       appBar: AppBar(
-        title: Text("User"),
-        backgroundColor: Color(0xFFF87217),
+        title: const Text("User"),
+        backgroundColor: const Color(0xFFF87217),
       ),
       body: Stack(
         children: [
@@ -86,16 +83,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               onColorChanged: changeColor,
               paletteColors: paletteGenerator
           ):Container(),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
         isSelected? FloatingActionButton(
             onPressed: () {
               Delete();
             }
-            ,child: Icon(Icons.delete),
-            backgroundColor: Color(0xFFF87217),
+            ,child: const Icon(Icons.delete),
+            backgroundColor: const Color(0xFFF87217),
           ):Container(),
-
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
           FloatingActionButton(
             onPressed: () async{
               setIsLoading(true);
@@ -104,23 +100,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               showModalBottomSheet<void>(
                 context: context,
                 builder: (BuildContext context) {
-                  return Container(
-                    child: Center(
-                      child: FurnitureListPage(
-                        context: context,
-                        spwan: (value) =>spwan(value),
-                        title: "Spawn Furniture",
-                        collectionName: "Furniture",
-                        furnitureInCategory: furnitureData[1],
-                        parentData: Data,
-                        dataLength: furnitureData[0].length,
-                        Data: furnitureData[0],
-                        isViewing: true,
-                        parentCollection: "User",
-                        parentID: loggedUser.id,
-                        spawned: true,
-
-                      ),
+                  return Center(
+                    child: FurnitureListPage(
+                      context: context,
+                      spwan: (value) =>spwan(value),
+                      collectionName: "Furniture",
+                      furnitureInCategory: furnitureData[1],
+                      parentData: Data,
+                      dataLength: furnitureData[0].length,
+                      data: furnitureData[0],
+                      isViewing: true,
+                      parentCollection: "User",
+                      parentID: loggedUser.id,
+                      spawned: true,
                     ),
                   );
                 },
@@ -141,66 +133,42 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   }
 
   void onUnityMessage(message) {
-      print(message.toString());
-
     if (message.toString() == "selected") {
-
       isSelected=true;
-  }
-
+    }
     if (message.toString() == "deselected") {
-
       isSelected=false;
     }
-
-    setState(() {
-
-    });
+    setState(() {});
   }
 
    spwan(String url){
-
     _unityWidgetController.postMessage(
       'ContentParent',
       'LoadContent',
        url,
     );
     Navigator.pop(context);
-    print("insid spwan ");
-
   }
 
 
   Delete(){
-
     _unityWidgetController.postMessage(
       'ContentParent',
       'DeleteItem',
       ""
     );
-
   }
 
-
   ChangeColors(String color){
-    print(color);
-
     color=color.substring(2,color.length);
     color="#"+color;
-
-    print(color);
-
     _unityWidgetController.postMessage(
         'ContentParent',
         'ChangeColor',
          color
     );
-
-
-
   }
-
-
 }
 
 

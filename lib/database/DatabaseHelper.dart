@@ -1,7 +1,4 @@
-import 'dart:ffi';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:corner_ar_gp/Category/Category.dart';
@@ -84,53 +81,10 @@ Future<Set<String>> uploadToStorage(String modelId, File modelBytes, File pictur
   final modelBytesRef = modelRef.child("/model");
   final modelPictureRef = modelRef.child("/picture");
 
-
   print("model-=-=-=-=-====> $modelBytes");
   await modelBytesRef.putFile(modelBytes);
-  print('puted ++++++++++++++++++++++++++');
-  //     .snapshotEvents.listen((taskSnapshot) {
-  //     .snapshotEvents.listen((taskSnapshot) {
-  //   switch (taskSnapshot.state) {
-  //     case TaskState.running:
-  //     // ...
-  //       break;
-  //     case TaskState.paused:
-  //     // ...
-  //       break;
-  //     case TaskState.success:
-  //     // ...
-  //       break;
-  //     case TaskState.canceled:
-  //     // ...
-  //       break;
-  //     case TaskState.error:
-  //     // ...
-  //       break;
-  //   }
-  // });
   print('image -=-=-=-=-=-=-=-=-===> $pictureBytes');
   await modelPictureRef.putFile(pictureBytes);
-  print("puten +++++++++++++++++++++++++++++");
-  //     .snapshotEvents.listen((taskSnapshot) {
-  //   switch (taskSnapshot.state) {
-  //     case TaskState.running:
-  //     // ...
-  //       break;
-  //     case TaskState.paused:
-  //     // ...
-  //       break;
-  //     case TaskState.success:
-  //     // ...
-  //       break;
-  //     case TaskState.canceled:
-  //     // ...
-  //       break;
-  //     case TaskState.error:
-  //     // ...
-  //       break;
-  //   }
-  // });
-
   String modelUrl = await modelBytesRef.getDownloadURL(), pictureUrl = await modelPictureRef.getDownloadURL();
 
   return {modelUrl, pictureUrl};
@@ -140,25 +94,14 @@ Future<Set<String>> uploadToStorage(String modelId, File modelBytes, File pictur
 Future<bool> saveFurniture(Furniture furniture) async{
   bool isSuccessful = true;
 
-  // final categoryRef = getCategoryCollectionWithConverter("Category");
-  //
-  // String temp = categoryRef.doc().id;
-  //
-  // try{
-  //   categoryRef.doc(temp).set(
-  //       Category(
-  //           name: name,
-  //           id: temp
-  //       )
-  //   )
-
-  //furniture.setId(id)
   final furnitureDoc = FirebaseFirestore.instance
       .collection(User.CollectionName)
       .doc(furniture.getCategory())
       .collection(Furniture.collectionName);
 
-  await furnitureDoc.doc(furniture.id).set(furniture.toJson()).onError((e, _){print("Error writing document: $e"); isSuccessful = false;});
+  await furnitureDoc.doc(furniture.id).set(furniture.toJson()).onError((e, _){
+    print("Error writing document: $e"); isSuccessful = false;
+  });
 
   print("added to fireStore");
 
@@ -179,9 +122,8 @@ Future<void> deleteAllCategroyFurniture(String categoryId) async{
 
 Future<void> deleteFromStorage(String path)async {
   try {
-    await FirebaseStorage.instance.refFromURL(path).delete().then((value) => print("5555555555555555555555555555555"));
+    await FirebaseStorage.instance.refFromURL(path).delete();
   } catch (e) {
     print('failed deleted storage item ============> $e');
   }
-
 }

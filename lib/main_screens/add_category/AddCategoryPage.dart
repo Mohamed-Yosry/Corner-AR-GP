@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:corner_ar_gp/Category/Category.dart';
 import 'package:flutter/material.dart';
 
+import '../../Data/Data.dart';
 import '../../components/buttons_components.dart';
 import '../../components/textField_components.dart';
 
 class AddCategoryPage extends StatefulWidget {
   String title;
-  AddCategoryPage(this.title);
+  Data dataObject;
+  AddCategoryPage(this.title,this.dataObject);
   @override
   _AddCategoryPageState createState() => _AddCategoryPageState(title);
 }
@@ -30,26 +32,14 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(title),
-          backgroundColor: Color(0xFFF87217),
+          backgroundColor: const Color(0xFFF87217),
         ),
         body: Stack(children: [
-          Container(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                'assets/backgroundBottom.png',
-                fit: BoxFit.fill,
-                width: double.infinity,
-              ),
-            ),
-          ),
-          Container(
-            child: Image.asset(
-              'assets/backgroundTop.png',
-              fit: BoxFit.fill,
-              //height: double.infinity,
-              width: double.infinity,
-            ),
+          Image.asset(
+            'assets/backgroundTop.png',
+            fit: BoxFit.fill,
+            height: double.infinity,
+            width: double.infinity,
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(30, 40, 30, 12),
@@ -65,10 +55,9 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
           ),
           Center(
             child: Container(
-                //padding: const EdgeInsets.fromLTRB(70,180,70,0),
                 child: LogAndRegisterButton(
                     buttonText: "Add Category",
-                    onPressedButton:  ()=>category.addCategory(context, validator, (value)=>setIsLoading(value))
+                    onPressedButton:  ()=>category.addCategory(context, validator, (value)=>setIsLoading(value),widget.dataObject)
                 )
             ),
           ),

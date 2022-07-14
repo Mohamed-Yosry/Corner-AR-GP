@@ -11,6 +11,8 @@ Container EditPasswordForm({
   required Function toggleNewPasswordVisibility,
   required GlobalKey<FormState> formCurrentKey,
   required GlobalKey<FormState> passwordFormKey,
+  String? newPassSavedValue,
+  String? newConfirmationPassSavedValue,
   bool hideCurrentPassword = true,
   bool hideNewPassword = true
 }){
@@ -24,8 +26,8 @@ Container EditPasswordForm({
     print('validating');
     if(_confirmedPassword != _password) {
       print(value??'*/*');print('different password');print( _password!);
-        message = 'Password confirmation does not match the password';
-      }
+      message = 'Password confirmation does not match the password';
+    }
     if(value!.length < 6){
       print('small pass');
       message = 'password length must be greater than 6';
@@ -41,7 +43,6 @@ Container EditPasswordForm({
     _password = pass;
   }
 
-
   return Container(
     padding: const EdgeInsets.only(top: 8, right: 18, left: 14, bottom: 10),
     child: Column(
@@ -49,13 +50,13 @@ Container EditPasswordForm({
         Form(
           key: formCurrentKey,
           child: textFormFieldComponent(
-                  hintText: 'Current Password',
-                  onChangedText: (value) => passwordGetter(value),
-                  validator: currentPasswordValidator,
-                  isPasswordTextForm: true,
-                  isPasswordHidden: hideCurrentPassword,
-                  togglePasswordVisibility: toggleCurrentPasswordVisibility
-            ),
+              hintText: 'Current Password',
+              onChangedText: (value) => passwordGetter(value),
+              validator: currentPasswordValidator,
+              isPasswordTextForm: true,
+              isPasswordHidden: hideCurrentPassword,
+              togglePasswordVisibility: toggleCurrentPasswordVisibility
+          ),
         ),
         Form(
           key: passwordFormKey,
@@ -68,7 +69,8 @@ Container EditPasswordForm({
                   validator: _validatePassword,
                   isPasswordTextForm: true,
                   isPasswordHidden: hideNewPassword,
-                  togglePasswordVisibility: toggleNewPasswordVisibility
+                  togglePasswordVisibility: toggleNewPasswordVisibility,
+                  initialValue: newPassSavedValue
               ),
               const SizedBox(height: 5,),
               textFormFieldComponent(
@@ -77,7 +79,8 @@ Container EditPasswordForm({
                   validator: _validateConfirmedPassword,
                   isPasswordTextForm: true,
                   isPasswordHidden: hideNewPassword,
-                  togglePasswordVisibility: toggleNewPasswordVisibility
+                  togglePasswordVisibility: toggleNewPasswordVisibility,
+                  initialValue: newConfirmationPassSavedValue
               ),
               const SizedBox(height: 5,),
             ],
@@ -86,5 +89,4 @@ Container EditPasswordForm({
       ],
     ),
   );
-
 }

@@ -12,15 +12,7 @@ class AppProvider extends ChangeNotifier {
    bool? _isAdmin;
 
   bool checkLoggedUser(){
-    //FirebaseAuth.instance.signOut();
     final firebaseCurrentUser = FirebaseAuth.instance.currentUser;
-    // if (firebaseCurrentUser != null) {
-    //   String _collectionName = app_user.User.CollectionName;
-    //   _checkAdmin(firebaseCurrentUser.uid).then((value) => _collectionName = Admin.CollectionName);
-    //   print(_collectionName);
-    //   _fetchUsers(_collectionName, firebaseCurrentUser).then((value) => loggedUser = value);
-    //   //print(loggedUser!.email+'+++++++++++++++++++++++'+loggedUser!.id+'++++++++++++++++'+loggedUser!.name);
-    // }
     return firebaseCurrentUser != null;
   }
 
@@ -35,7 +27,6 @@ class AppProvider extends ChangeNotifier {
       );
       print(_collectionName);
       _fetchUsers(_collectionName, firebaseCurrentUser).then((value) => loggedUser = value);
-      //print(loggedUser!.email+'+++++++++++++++++++++++'+loggedUser!.id+'++++++++++++++++'+loggedUser!.name);
     }
   }
 
@@ -47,20 +38,10 @@ class AppProvider extends ChangeNotifier {
         .then((user) {
           if (user.data() != null) {
             collectionPerson = collectionName == Admin.CollectionName? Admin() : app_user.User();
-            //_checkAdmin(firebaseCurrentUser.uid).then((value) => collectionPerson = Admin());
             collectionPerson = user.data()!;
-            //notifyListeners();
-            //print(collectioPerson!.email+'----------'+collectioPerson!.id+'------------------'+collectioPerson!.name);
           }
         });
-      //print(loggedUser!.email+'+++++++++++++++++++++++'+loggedUser!.id+'++++++++++++++++'+loggedUser!.name);
-
-    //notifyListeners();
     return collectionPerson;
-    // await Future.delayed(const Duration(milliseconds: 100), (){
-    //   notifyListeners();
-    // });
-
   }
 
   void updateLoggedUser(Person user) {
@@ -69,7 +50,6 @@ class AppProvider extends ChangeNotifier {
   }
 
   Person getLoggedUser(){
-    //print(loggedUser!.email+'00000000000000000000'+loggedUser!.id+'0000000000000000000000000'+loggedUser!.name);
     return loggedUser ?? Person();
   }
 
@@ -80,18 +60,16 @@ class AppProvider extends ChangeNotifier {
         .where('id', isEqualTo: id)
         .get()
         .then((value) {
-          print("checccccccccccccccccccccccccccccckijng  ${value.size}");
+          print("checking  ${value.size}");
       },
     );
     return adminReference.exists;
   }
 
   Future<bool> isLoggedUserAdmin() async {
-    print('[]][][][][[][][][ $_isAdmin');
     while(_isAdmin == null) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
-    print('[]][][][][[][][][ $_isAdmin');
     return _isAdmin ?? false;
   }
 }

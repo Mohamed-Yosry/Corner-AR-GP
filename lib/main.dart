@@ -1,6 +1,4 @@
-import 'package:camera/camera.dart';
 import 'package:corner_ar_gp/authentication/registration/registration_screen.dart';
-import 'package:corner_ar_gp/main_screens/home_screen/admin_homescreen.dart';
 import 'package:corner_ar_gp/provider_manager/AppProvider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,10 +14,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseAppCheck.instance.activate();
-  String? token = await FirebaseAppCheck.instance.getToken();
-  await FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(true);
-  FirebaseAppCheck.instance.onTokenChange.listen((token) {
-  });
   runApp(MyApp());
 }
 
@@ -42,8 +36,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           routes: {
-            RegistrationScreen.routeName: (context) =>
-                RegistrationScreen(isAdmin: false),
+            RegistrationScreen.routeName: (context) => RegistrationScreen(isAdmin: false),
             Login.routeName: (context) => Login(),
             LoadingScreen.routeName: (context) =>LoadingScreen(),
           },

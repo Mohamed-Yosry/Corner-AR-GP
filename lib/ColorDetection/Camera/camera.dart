@@ -9,9 +9,7 @@ class Camera extends StatefulWidget {
   static const routeName = 'camera';
 
   List<CameraDescription> cameras;
-  //CameraController cameraController;
   Camera(this.cameras);//,this.cameraController);
-
 
   @override
   _CameraState createState() => _CameraState(cameras);
@@ -23,7 +21,6 @@ class _CameraState extends State<Camera> {
 
   bool img = false;
   late CameraController cameraController;
-
   late Future<void> _initializeControllerFuture;
 
 
@@ -85,18 +82,14 @@ class _CameraState extends State<Camera> {
               try {
                 // Ensure that the camera is initialized.
                 await _initializeControllerFuture;
-
                 // Attempt to take a picture and get the file `image` where it was saved.
                 final image = await cameraController.takePicture();
-
                 final ImageProvider imageprovide = Image.file(File(image.path)).image;
                 // If the picture was taken, display it on a new screen.
-
                 //AssetImage(image.name),
-
                 PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(
                   imageprovide,
-                  size: Size(256.0, 170.0),
+                  size: const Size(256.0, 170.0),
                   maximumColorCount: 20,
                 );
 

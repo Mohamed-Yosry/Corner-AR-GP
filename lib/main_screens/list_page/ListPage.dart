@@ -3,30 +3,34 @@ import 'package:corner_ar_gp/authentication/registration/registration_screen.dar
 import 'package:corner_ar_gp/main_screens/add_category/AddCategoryPage.dart';
 import 'package:corner_ar_gp/person/Admin.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../Data/Data.dart';
 import '../../components/getdata_components.dart';
 import '../../database/DatabaseHelper.dart';
+import '../../person/Person.dart';
+import '../../provider_manager/AppProvider.dart';
 
 
 class ListPage extends StatefulWidget {
   static const routeName = 'listpage';
-  String title;
-  String collectionName;
-  var Data;
-  int dataLength;
-  var loggeduser;
-  ListPage({required this.title,required this.collectionName,required this.Data,required this.dataLength,this.loggeduser});
-  @override
-  _ListPageState createState() => _ListPageState(this.title,this.collectionName,this.Data,this.dataLength);
-}
-
-class _ListPageState extends State<ListPage> {
-  String title;
+  Data dataObject;
   String collectionName;
   var data;
   int dataLength;
-  _ListPageState(this.title,this.collectionName,this.data,this.dataLength);
+  ListPage({required this.dataObject,required this.collectionName,required this.data,required this.dataLength});
+  @override
+  _ListPageState createState() => _ListPageState(this.dataObject,this.collectionName,this.data,this.dataLength);
+}
+
+class _ListPageState extends State<ListPage> {
+  Data dataObject;
+  String collectionName;
+  var data;
+  int dataLength;
+  _ListPageState(this.dataObject,this.collectionName,this.data,this.dataLength);
   bool isLoading = false;
+  late Person loggedUser;
 
   late QuerySnapshot querySnapshot;
 
@@ -38,33 +42,24 @@ class _ListPageState extends State<ListPage> {
 
 
   @override
-  void initState() {
-    print("**********************************");
-    print(data);
-    print(dataLength);
-    setState(() {});
-    super.initState();
-  }
-
-
-  @override
   Widget build(BuildContext context) {
+    late final _myAppProvider = Provider.of<AppProvider>(context);
+    loggedUser = _myAppProvider.getLoggedUser();
+
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            child: Image.asset(
-              'assets/backgroundTop.png',
-              fit: BoxFit.fill,
-              //height: double.infinity,
-              width: double.infinity,
-            ),
+          Image.asset(
+            'assets/backgroundTop.png',
+            fit: BoxFit.fill,
+            height: double.infinity,
+            width: double.infinity,
           ),
           ListView.builder(
             itemCount: dataLength,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                padding: EdgeInsets.fromLTRB(30, 30, 30, 0),
+                padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
                 child: Container(
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -74,7 +69,7 @@ class _ListPageState extends State<ListPage> {
                     children: [
                       Expanded(
                         child: Container(
-                            child: Text(data[index]['name'],style: TextStyle(fontSize: 20),),
+                            child: Text(data[index]['name'],style: const TextStyle(fontSize: 20),),
                           padding: const EdgeInsets.only(left: 10),
                         ),
                       ),
@@ -82,7 +77,6 @@ class _ListPageState extends State<ListPage> {
                         child: IconButton(
                           onPressed: ()async{
                             setIsLoading(true);
-                            print(data[index]['id']);
 
                             if(collectionName == "Category"){
                               deleteAllCategroyFurniture(data[index]['id']);
@@ -92,22 +86,21 @@ class _ListPageState extends State<ListPage> {
                                 .doc(data[index]['id'])
                                 .delete()
                                 .then((_) async {
-                                  print('Deleted');
                                   data = await getData(collectionName);
-                                  print(data);
-                                  print(data.length);
-                                  print("finsih");
-                                  print(index);
-                                  setState((){});
+                                  if(collectionName == "Admin"){
+                                    dataObject.adminData = data;
+                                  }else if(collectionName == "Category"){
+                                    dataObject.categoryData = data;
+                                  }
                                 }).catchError((error) => print('Delete failed: $error'));
-                            print("out");
-                            print(index);
+
                             setState((){
                               dataLength = data.length;
                             });
                             if(collectionName == "Admin"){
-                              if(widget.loggeduser.id == prevID)
-                              widget.loggeduser.logOut(context);
+                              if(loggedUser.id == prevID) {
+                                loggedUser.logOut(context);
+                              }
                             }
                             setIsLoading(false);
                           },
@@ -118,7 +111,6 @@ class _ListPageState extends State<ListPage> {
                         ),
                         alignment: Alignment.centerLeft,
                       )
-
                     ],
                   ),
                 )
@@ -141,11 +133,11 @@ class _ListPageState extends State<ListPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) =>AddCategoryPage("Add Category"),));
+                  builder: (BuildContext context) =>AddCategoryPage("Add Category",dataObject),));
           }
         }
-        ,child: Icon(Icons.add),
-        backgroundColor: Color(0xFFF87217),
+        ,child: const Icon(Icons.add),
+        backgroundColor: const Color(0xFFF87217),
       ),
     );
   }

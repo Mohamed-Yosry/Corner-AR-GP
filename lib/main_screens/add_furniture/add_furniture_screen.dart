@@ -6,15 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:corner_ar_gp/Furniture/Furniture.dart';
 import 'package:corner_ar_gp/components/buttons_components.dart';
 import 'package:file_picker/file_picker.dart';
-
+import '../../Data/Data.dart';
 import '../../components/getdata_components.dart';
 import '../home_screen/admin_homescreen.dart';
 
 class AddFurnitureScreen extends StatefulWidget {
   static const String title = "Add a Furniture";
   String categoryID;
+  Data dataObject;
 
-  AddFurnitureScreen({required this.categoryID});
+  AddFurnitureScreen({required this.categoryID,required this.dataObject});
   String? notNullValidator(String? value) => value == null || value.isEmpty ? "please enter a furniture name"
       : null;
 
@@ -33,26 +34,14 @@ class _AddFurnitureScreenState extends State<AddFurnitureScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(AddFurnitureScreen.title),
-          backgroundColor: Color(0xFFF87217),
+          backgroundColor: const Color(0xFFF87217),
         ),
         body: Stack(children: [
-          Container(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                'assets/backgroundBottom.png',
-                fit: BoxFit.fill,
-                width: double.infinity,
-              ),
-            ),
-          ),
-          Container(
-            child: Image.asset(
-              'assets/backgroundTop.png',
-              fit: BoxFit.fill,
-              //height: double.infinity,
-              width: double.infinity,
-            ),
+          Image.asset(
+            'assets/backgroundTop.png',
+            fit: BoxFit.fill,
+            height: double.infinity,
+            width: double.infinity,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -105,12 +94,7 @@ class _AddFurnitureScreenState extends State<AddFurnitureScreen> {
                           final appStorageDir = await getApplicationDocumentsDirectory();
                           File temp = File('${appStorageDir.path}/${result.files.first.name}');
                           modelPictureBytes = File(result.files.first.path!);
-                              modelPictureBytes.copy(temp.path);
-                          /**
-                           *
-                              // Upload file
-                              await FirebaseStorage.instance.ref('uploads/$fileName').putData(fileBytes);
-                           */
+                          modelPictureBytes.copy(temp.path);
                         } else {
                           isPicturePicked = false;
                         }
@@ -174,26 +158,22 @@ class _AddFurnitureScreenState extends State<AddFurnitureScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           print("added successfully");
 
-                          var Data = await getData("Admin");
-                          var categoryData = await getData("Category");
                           var furnitureData = await getDataFurniture("Furniture","Category");
+                          widget.dataObject.furnitureData = furnitureData;
                           Navigator.pop(context);
                           Navigator.pushReplacement<void, void>(
                             context,
                             MaterialPageRoute<void>(
-                                builder: (BuildContext context) => AdminHomeScreen(Data,categoryData,furnitureData,2,"Furniture List")
+                                builder: (BuildContext context) => AdminHomeScreen(2,"Furniture List",widget.dataObject)
                             )
                           );
                         }
                       }
                   )
               ),
-
             ],
           ),
-
         ])
     );
   }
-
 }

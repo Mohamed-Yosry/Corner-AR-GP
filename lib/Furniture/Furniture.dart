@@ -33,14 +33,13 @@ class Furniture{
     return id;
   }
   void setCategory(String category){
-    this.parentID = category;
+    parentID = category;
   }
   String getCategory(){
     return parentID;
   }
 
-  Furniture.fromJson(Map<String, Object?> json)
-      : this(
+  Furniture.fromJson(Map<String, Object?> json) : this(
     modelUrl: json['modelUrl']! as String,
     modelName: json['modelName']! as String,
     imageUrl: json['imageUrl']! as String,

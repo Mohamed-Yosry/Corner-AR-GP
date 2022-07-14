@@ -27,8 +27,9 @@ class _MyColorPickerState extends State<MyColorPicker> {
 
 
   Widget pickerLayoutBuilder(BuildContext context, List<Color> colors, PickerItem child) {
-    if(widget.paletteColors.isNotEmpty)
+    if(widget.paletteColors.isNotEmpty) {
       size = widget.paletteColors.length;
+    }
     return SizedBox(
       height: 100,
       child: size!=0?GridView.count(
@@ -99,8 +100,8 @@ class _MyColorPickerState extends State<MyColorPicker> {
           },
         );
       },
-      child: Icon(Icons.color_lens_outlined),
-      backgroundColor: Color(0xFFF87217),
+      child: const Icon(Icons.color_lens_outlined),
+      backgroundColor: const Color(0xFFF87217),
     );
   }
 }

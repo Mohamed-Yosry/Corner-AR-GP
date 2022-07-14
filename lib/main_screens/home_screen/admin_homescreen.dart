@@ -1,67 +1,46 @@
 import 'package:corner_ar_gp/components/drawer_component.dart';
 import 'package:corner_ar_gp/person/Person.dart';
 import 'package:corner_ar_gp/provider_manager/AppProvider.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../components/buttons_components.dart';
+import '../../Data/Data.dart';
 import '../../person/Admin.dart';
 import '../list_page/FurnitureListPage.dart';
 import '../list_page/ListPage.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   static const routeName = 'adminHomeScreen';
-  var adminData;
-  var categoryData;
-  var furnitureData;
+  Data dataObject;
   int _selectedIndex;
   String title;
-  AdminHomeScreen(this.adminData,this.categoryData,this.furnitureData,this._selectedIndex,this.title);
+  AdminHomeScreen(this._selectedIndex,this.title,this.dataObject);
   @override
-  _AdminHomeScreenState createState() => _AdminHomeScreenState(adminData,categoryData,furnitureData,_selectedIndex,title);
+  _AdminHomeScreenState createState() => _AdminHomeScreenState(_selectedIndex,title,dataObject);
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
-  var adminData;
-  var categoryData;
-  var furnitureData;
+  Data dataObject;
   String title;
   int _selectedIndex = 0;
-  _AdminHomeScreenState(this.adminData,this.categoryData,this.furnitureData,this._selectedIndex,this.title);
+  _AdminHomeScreenState(this._selectedIndex,this.title,this.dataObject);
   late Person loggedUser;
   late String sideMenuContent;
   bool isLoading = false;
+  late Widget temp = ListPage(
+    dataObject: dataObject,
+    collectionName:Admin.CollectionName,
+    data: dataObject.adminData,
+    dataLength: dataObject.adminData.length,
+  );
 
+  @override
+  void initState() {
+    _onItemTapped(_selectedIndex);
+    super.initState();
+  }
 
-  late final List<Widget> _widgetOptions = <Widget>[
-      ListPage(
-        title:"Admins List",
-        collectionName:Admin.CollectionName,
-        Data: adminData,
-        dataLength: adminData.length,
-        loggeduser: loggedUser,
-    ),
-    Container(
-      child: ListPage(
-          title:"Category List",
-          collectionName:"Category",
-          Data: categoryData,
-          dataLength: categoryData.length,
-      ),
-    ),
-    FurnitureListPage(
-      spawned: false,
-      title: "Furniture List",
-      collectionName:"Furniture",
-      Data: furnitureData[0],
-      dataLength: furnitureData[0].length,
-      parentData: categoryData,
-      furnitureInCategory: furnitureData[1],
-      isViewing: false,
-      parentCollection: "Category",
-      parentID: "",
-    ),
-  ];
 
   void setIsLoading(value) {
     setState(() {
@@ -69,18 +48,42 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     });
   }
 
-  void _onItemTapped(int index) async{
+  void _onItemTapped(int index){
     setIsLoading(true);
     if(index == 0){
       title = "Admins List";
+      temp = ListPage(
+        dataObject: dataObject,
+        collectionName:Admin.CollectionName,
+        data: dataObject.adminData,
+        dataLength: dataObject.adminData.length,
+      );
     }else if(index == 1){
       title = "Categories List";
+      temp = Container(
+            child: ListPage(
+              dataObject: dataObject,
+                collectionName:"Category",
+                data: dataObject.categoryData,
+                dataLength: dataObject.categoryData.length,
+            ),
+          );
     }else if(index == 2){
       title = "Furniture List";
+      temp = FurnitureListPage(
+            spawned: false,
+            dataObject: dataObject,
+            collectionName:"Furniture",
+            data: dataObject.furnitureData[0],
+            dataLength: dataObject.furnitureData[0].length,
+            parentData: dataObject.categoryData,
+            furnitureInCategory: dataObject.furnitureData[1],
+            isViewing: false,
+            parentCollection: "Category",
+            parentID: "",
+          );
     }
-    setState(() {
-      _selectedIndex = index;
-    });
+    _selectedIndex = index;
     setIsLoading(false);
   }
 
@@ -89,8 +92,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     late final _myAppProvider = Provider.of<AppProvider>(context);
     loggedUser = _myAppProvider.getLoggedUser();
     sideMenuContent = loggedUser.name;
-
-
 
     return Scaffold(
       drawer: sideMenu(
@@ -104,16 +105,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       ),
       body: Stack(
         children: [
-          Container(
-            child: Image.asset(
-              'assets/backgroundTop.png',
-              fit: BoxFit.fill,
-              height: double.infinity,
-              width: double.infinity,
-            ),
+          Image.asset(
+            'assets/backgroundTop.png',
+            fit: BoxFit.fill,
+            height: double.infinity,
+            width: double.infinity,
           ),
           Container(
-            child: _widgetOptions.elementAt(_selectedIndex),
+            child: temp//_widgetOptions.elementAt(_selectedIndex),
           ),
           if (isLoading)
             const Center(
