@@ -86,22 +86,26 @@ class Person{
             )
         ).then((user)async{
           _myAppProvider.updateLoggedUser(this);
-          var adminData = await getData("Admin");
-          var categoryData = await getData("Category");
-          var furnitureData = await getDataFurniture("Furniture","Category");
-          Data dataObject = new Data(adminData, categoryData, furnitureData);
-          cameras = await setCamera();
-          Navigator.pop(context);
+
+          late Widget nextPage;
+          if(isAdmin){
+            var adminData = await getData("Admin");
+            var categoryData = await getData("Category");
+            var furnitureData = await getDataFurniture("Furniture","Category");
+            Data dataObject = Data(adminData, categoryData, furnitureData);
+            nextPage = AdminHomeScreen(0,"Admins List",dataObject);
+          }else if(!isAdmin){
+            cameras = await setCamera();
+            nextPage = Camera(cameras);
+          }
+
           Navigator.pushReplacement<void, void>(
-            context,
-            isAdmin?MaterialPageRoute<void>(
-              builder: (BuildContext context) =>
-                  AdminHomeScreen(0,"Admins List",dataObject)
-            ):MaterialPageRoute<void>(
-              builder: (BuildContext context) =>
-                  Camera(cameras),
-            ),
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) => nextPage,
+              )
           );
+
         });
         print('done --------------------------------------------------------------');
         return true;
@@ -147,21 +151,23 @@ class Person{
 
                 _myAppProvider.updateLoggedUser(this);
 
-                cameras = await setCamera();
-                var adminData = await getData("Admin");
-                var categoryData = await getData("Category");
-                var furnitureData = await getDataFurniture("Furniture","Category");
-                Data dataObject = new Data(adminData, categoryData, furnitureData);
+                late Widget nextPage;
+                if(adminRefrence.exists){
+                  var adminData = await getData("Admin");
+                  var categoryData = await getData("Category");
+                  var furnitureData = await getDataFurniture("Furniture","Category");
+                  Data dataObject = Data(adminData, categoryData, furnitureData);
+                  nextPage = AdminHomeScreen(0,"Admins List",dataObject);
+                }else if(!adminRefrence.exists){
+                  cameras = await setCamera();
+                  nextPage = Camera(cameras);
+                }
+
                 Navigator.pushReplacement<void, void>(
                   context,
-                  adminRefrence.exists?MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        AdminHomeScreen(0,"Admins List",dataObject),
-                  ):MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        //UserHomeScreen(),
-                      Camera(cameras)
-                  ),
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => nextPage,
+                  )
                 );
               });
         }
