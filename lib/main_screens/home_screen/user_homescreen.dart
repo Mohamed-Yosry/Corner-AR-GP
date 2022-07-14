@@ -14,7 +14,9 @@ import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 class UserHomeScreen extends StatefulWidget {
   static const routeName = 'userHomeScreen';
   late var paletteGenerator;
-  UserHomeScreen(this.paletteGenerator);
+  var categoryData ;
+  var furnitureData;
+  UserHomeScreen(this.paletteGenerator,this.categoryData,this.furnitureData);
 
   @override
   _UserHomeScreenState createState() => _UserHomeScreenState(this.paletteGenerator);
@@ -93,10 +95,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           ):Container(),
           const SizedBox(height: 10,),
           FloatingActionButton(
-            onPressed: () async{
+            onPressed: () {
               setIsLoading(true);
-              var Data = await getData("Category");
-              var furnitureData = await getDataFurniture("Furniture","Category");
+              // var Data = await getData("Category");
+              // var furnitureData = await getDataFurniture("Furniture","Category");
               showModalBottomSheet<void>(
                 context: context,
                 builder: (BuildContext context) {
@@ -105,10 +107,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       context: context,
                       spwan: (value) =>spwan(value),
                       collectionName: "Furniture",
-                      furnitureInCategory: furnitureData[1],
-                      parentData: Data,
-                      dataLength: furnitureData[0].length,
-                      data: furnitureData[0],
+                      furnitureInCategory: widget.furnitureData[1],
+                      parentData: widget.categoryData,
+                      dataLength: widget.furnitureData[0].length,
+                      data: widget.furnitureData[0],
                       isViewing: true,
                       parentCollection: "User",
                       parentID: loggedUser.id,
@@ -119,8 +121,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               );
               setIsLoading(false);
             }
-            ,child: Icon(Icons.add),
-            backgroundColor: Color(0xFFF87217),
+            ,child: const Icon(Icons.add),
+            backgroundColor: const Color(0xFFF87217),
           ),
         ],
       ),

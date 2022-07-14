@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:corner_ar_gp/components/getdata_components.dart';
 import 'package:corner_ar_gp/main_screens/home_screen/user_homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -50,11 +51,13 @@ class _CameraState extends State<Camera> {
                   Icon(Icons.navigate_next,color: Colors.white,),
                 ],
               ),
-            onPressed: () {
+            onPressed: () async{
+              var categoryData = await getData("Category");
+              var furnitureData = await getDataFurniture("Furniture","Category");
               Navigator.pushReplacement<void, void>(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (context) => UserHomeScreen(const []),
+                  builder: (context) => UserHomeScreen(const [],categoryData,furnitureData),
                 ),
               );
             },
@@ -117,10 +120,12 @@ class _CameraState extends State<Camera> {
                   paletteColors.add(paletteGenerator.mutedColor?.color);
                 }
 
+                var categoryData = await getData("Category");
+                var furnitureData = await getDataFurniture("Furniture","Category");
                 Navigator.pushReplacement<void, void>(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (context) => UserHomeScreen(paletteColors),
+                    builder: (context) => UserHomeScreen(paletteColors,categoryData,furnitureData),
                   ),
                 );
               } catch (e) {
