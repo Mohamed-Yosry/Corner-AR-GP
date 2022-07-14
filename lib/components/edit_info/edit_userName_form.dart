@@ -11,7 +11,7 @@ Container EditUserNameForm({
 {
   _defaultValidator (value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter last name';
+      return 'Please enter valid name';
     }
     return null;
   }
